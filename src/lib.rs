@@ -18,7 +18,7 @@ mod routes;
 mod ssh;
 
 use crate::{
-    routes::{echo_handler, get_handler, post_handler, ws_handler},
+    routes::{get_handler, post_handler, ws_handler},
     ssh::TcpForwardSession,
 };
 
@@ -38,7 +38,6 @@ pub fn get_router(max_data_size: usize) -> RouterService {
                 "/post/{file_size}",
                 post(post_handler).layer(DefaultBodyLimit::max(max_data_size)),
             )
-            .route("/echo", post(echo_handler))
             .route("/ws", get(ws_handler))
             .into_service(),
     )
@@ -53,6 +52,13 @@ pub async fn ssh_entrypoint(
     service: RouterService,
 ) -> color_eyre::Result<()> {
     let config = Arc::new(client::Config {
+        preferred: russh::Preferred {
+            cipher: std::borrow::Cow::Borrowed(&[
+                russh::cipher::CHACHA20_POLY1305,
+                russh::cipher::AES_256_GCM,
+            ]),
+            ..Default::default()
+        },
         ..Default::default()
     });
     loop {

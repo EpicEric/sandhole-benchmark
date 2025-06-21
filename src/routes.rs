@@ -31,10 +31,6 @@ pub(crate) async fn post_handler(
     }
 }
 
-pub(crate) async fn echo_handler(body: body::Body) -> impl IntoResponse {
-    body
-}
-
 /* WebSocket handling */
 
 pub(crate) async fn ws_handler(ws: WebSocketUpgrade) -> impl IntoResponse {
