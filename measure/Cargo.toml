@@ -1,0 +1,21 @@
+[package]
+authors = ["Eric Rodrigues Pires <eric@eric.dev.br>"]
+name = "sandhole-benchmark-measure"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+readme = "../README.md"
+repository = "https://github.com/epiceric/sandhole-benchmark"
+
+[dependencies]
+bytes.workspace = true
+clap.workspace = true
+color-eyre.workspace = true
+futures.workspace = true
+humantime = "2.2.0"
+rand.workspace = true
+reqwest = "0.12.20"
+reqwest-websocket = "0.5.0"
+tokio.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true

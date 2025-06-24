@@ -1,23 +1,14 @@
-[package]
-authors = ["Eric Rodrigues Pires <eric@eric.dev.br>"]
-name = "sandhole-benchmark"
-version = "0.1.0"
-edition = "2024"
-license = "MIT"
+[workspace]
+resolver = "3"
+members = ["service", "measure"]
 
-[dependencies]
-axum = { version = "0.8.1", features = ["ws"] }
-backon = "1.4.0"
+[workspace.dependencies]
 bytes = "1.10.1"
 clap = { version = "4.5.40", features = ["derive"] }
 color-eyre = "0.6.5"
 futures = "0.3.31"
-hyper = { version = "1.6.0", features = ["full"] }
-hyper-util = { version = "0.1.10", features = ["full"] }
 rand = "0.9.1"
-russh = "0.50.4"
 tokio = { version = "1.43.0", features = ["full"] }
-tower = "0.5.2"
 tracing = "0.1.41"
 tracing-subscriber = { version = "0.3.19", features = [
   "fmt",
