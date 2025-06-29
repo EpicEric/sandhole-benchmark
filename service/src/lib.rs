@@ -11,7 +11,7 @@ use color_eyre::eyre::WrapErr;
 use hyper::body::Incoming;
 use hyper_util::service::TowerToHyperService;
 use rand::RngCore;
-use russh::{client, keys::PrivateKey};
+use russh::{cipher::Name, client, keys::PrivateKey};
 use tracing::{debug, error, info};
 
 mod routes;
@@ -49,14 +49,12 @@ pub async fn ssh_entrypoint(
     port: u16,
     login_name: &str,
     key: Arc<PrivateKey>,
+    ciphers: Vec<Name>,
     service: RouterService,
 ) -> color_eyre::Result<()> {
     let config = Arc::new(client::Config {
         preferred: russh::Preferred {
-            cipher: std::borrow::Cow::Borrowed(&[
-                russh::cipher::CHACHA20_POLY1305,
-                russh::cipher::AES_256_GCM,
-            ]),
+            cipher: std::borrow::Cow::Owned(ciphers),
             ..Default::default()
         },
         ..Default::default()

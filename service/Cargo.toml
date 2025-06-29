@@ -17,7 +17,7 @@ futures.workspace = true
 hyper = { version = "1.6.0", features = ["full"] }
 hyper-util = { version = "0.1.10", features = ["full"] }
 rand.workspace = true
-russh = "0.50.4"
+russh = "0.52.1"
 tokio.workspace = true
 tower = "0.5.2"
 tracing.workspace = true
