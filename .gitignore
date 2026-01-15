@@ -1,1 +1,4 @@
+/deploy/
 /target/
+/.direnv/
+/result

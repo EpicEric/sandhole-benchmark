@@ -80,14 +80,30 @@ pub async fn entrypoint(
     let client = if let Some(config) = config {
         let client = reqwest::Client::builder().tls_backend_preconfigured(config);
         if let Some(host) = host {
-            client.resolve(base_url, host).build()?
+            client
+                .resolve(
+                    base_url
+                        .split_once(':')
+                        .map(|(first, _)| first)
+                        .unwrap_or(base_url),
+                    host,
+                )
+                .build()?
         } else {
             client.build()?
         }
     } else {
         let client = reqwest::Client::builder().tls_backend_rustls();
         if let Some(host) = host {
-            client.resolve(base_url, host).build()?
+            client
+                .resolve(
+                    base_url
+                        .split_once(':')
+                        .map(|(first, _)| first)
+                        .unwrap_or(base_url),
+                    host,
+                )
+                .build()?
         } else {
             client.build()?
         }
@@ -100,8 +116,10 @@ pub async fn entrypoint(
         let jh = tokio::spawn(async move { handler(base_url, client, endpoint, data, size).await });
         jhs.push(jh);
     }
-    try_join_all(jhs.into_iter()).await?;
+    let collected = try_join_all(jhs.into_iter()).await?;
+
     let elapsed = started.elapsed();
+    collected.into_iter().collect::<Result<Vec<_>, _>>()?;
     info!(
         elapsed = humantime::format_duration(elapsed).to_string(),
         "Benchmark finished."

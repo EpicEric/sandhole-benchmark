@@ -84,7 +84,7 @@ impl TcpForwardSession {
             .wrap_err_with(|| "channel_open_session error.")?;
         debug!("Created open session channel.");
         session
-            .tcpip_forward("", 80)
+            .tcpip_forward("measure", 80)
             .await
             .wrap_err_with(|| "tcpip_forward error.")?;
         debug!("Requested tcpip_forward session.");
