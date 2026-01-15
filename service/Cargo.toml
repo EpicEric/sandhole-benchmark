@@ -8,17 +8,17 @@ readme = "../README.md"
 repository = "https://github.com/epiceric/sandhole-benchmark"
 
 [dependencies]
-axum = { version = "0.8.1", features = ["ws"] }
-backon = "1.4.0"
+axum = { version = "0.8.8", features = ["ws"] }
+backon = "1.6.0"
 bytes.workspace = true
 clap.workspace = true
 color-eyre.workspace = true
 futures.workspace = true
-hyper = { version = "1.6.0", features = ["full"] }
-hyper-util = { version = "0.1.10", features = ["full"] }
+hyper = { version = "1.8.1", features = ["full"] }
+hyper-util = { version = "0.1.19", features = ["full"] }
 rand.workspace = true
-russh = "0.52.1"
+russh = "0.56.0"
 tokio.workspace = true
-tower = "0.5.2"
+tower = "0.5.3"
 tracing.workspace = true
 tracing-subscriber.workspace = true

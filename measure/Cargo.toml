@@ -8,14 +8,16 @@ readme = "../README.md"
 repository = "https://github.com/epiceric/sandhole-benchmark"
 
 [dependencies]
+aws-lc-rs = "1.15.3"
 bytes.workspace = true
 clap.workspace = true
 color-eyre.workspace = true
 futures.workspace = true
-humantime = "2.2.0"
+humantime = "2.3.0"
 rand.workspace = true
-reqwest = "0.12.20"
-reqwest-websocket = "0.5.0"
+reqwest = "0.13.0"
+reqwest-websocket = { git = "https://github.com/jgraef/reqwest-websocket.git", rev = "25743f1a0ed0303a934897efa0b8a129f3381395" }
+rustls = "0.23.36"
 tokio.workspace = true
 tracing.workspace = true
 tracing-subscriber.workspace = true

@@ -1,3 +1,5 @@
+use std::{net::SocketAddr, path::PathBuf};
+
 use clap::Parser;
 use sandhole_benchmark_measure::{Endpoint, EntrypointConfig, entrypoint};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
@@ -14,6 +16,12 @@ pub struct Config {
 
     #[arg(long, short, default_value_t = 1)]
     concurrency: usize,
+
+    #[arg(long, short = 'C')]
+    custom_ca_cert: Option<PathBuf>,
+
+    #[arg(long, short)]
+    host_ip: Option<SocketAddr>,
 }
 
 #[tokio::main]
@@ -33,6 +41,8 @@ async fn main() -> color_eyre::Result<()> {
         endpoint: config.endpoint,
         size: config.size,
         concurrency: config.concurrency,
+        custom_ca_cert: config.custom_ca_cert,
+        host_ip: config.host_ip,
     })
     .await
 }
