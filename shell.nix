@@ -7,7 +7,5 @@ in
 pkgs.mkShell {
   packages = [
     pkgs.rust-bin.stable.latest.default
-    pkgs.sandhole
-    pkgs.sish
   ];
 }

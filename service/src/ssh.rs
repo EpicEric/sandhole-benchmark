@@ -76,12 +76,18 @@ impl TcpForwardSession {
     /// Sends a port forwarding request and opens a session to receive miscellaneous data.
     /// The function yields when the session is broken (for example, if the connection was lost).
     #[instrument(level = "debug", skip(self))]
-    pub(crate) async fn start_forwarding(&mut self) -> Result<u32> {
+    pub(crate) async fn start_forwarding(&mut self, exec: Option<&str>) -> Result<u32> {
         let session = &mut self.0;
         let mut channel = session
             .channel_open_session()
             .await
             .wrap_err_with(|| "channel_open_session error.")?;
+        if let Some(exec) = exec {
+            channel
+                .exec(false, exec)
+                .await
+                .wrap_err_with(|| "exec error.")?;
+        }
         debug!("Created open session channel.");
         session
             .tcpip_forward("measure", 80)

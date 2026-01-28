@@ -41,6 +41,10 @@ pub struct Config {
     /// Ciphers to use with SSH.
     #[arg(long, short, value_parser = validate_cipher, default_values_t = vec![CipherName(CHACHA20_POLY1305), CipherName(AES_256_GCM)])]
     cipher: Vec<CipherName>,
+
+    /// Flags to pass via exec.
+    #[arg(long, short)]
+    exec: Option<String>,
 }
 
 fn validate_cipher(value: &str) -> Result<CipherName, String> {
@@ -72,6 +76,7 @@ async fn main() -> color_eyre::Result<()> {
             .map(|cipher_name| cipher_name.0)
             .collect(),
         get_router(config.max_data_size),
+        config.exec.as_ref().map(String::as_str),
     )
     .await
 }

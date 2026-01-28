@@ -2,7 +2,7 @@ list:
     just -l
 
 sandhole:
-    sandhole --domain=foobar.tld \
+    ./sandhole --domain=foobar.tld \
         --user-keys-directory=./test_data/user_keys \
         --certificates-directory=./test_data/certificates_sandhole \
         --ssh-port=13122 \
@@ -11,7 +11,7 @@ sandhole:
         --allow-requested-subdomains
 
 sish:
-    sish --domain foobar.tld \
+    ./sish --domain=foobar.tld \
         --authentication-keys-directory=./test_data/user_keys \
         --https-certificate-directory=./test_data/certificates_sish \
         --private-keys-directory=./test_data/keys_sish \
@@ -24,14 +24,16 @@ sish:
 
 service-sandhole:
     cargo run --release -p sandhole-benchmark-service -- \
-        --private-key ./test_data/ssh_key \
-        --port 13122 \
+        --private-key=./test_data/ssh_key \
+        --port=13122 \
+        --cipher=chacha20-poly1305@openssh.com \
         localhost
 
 service-sish:
     cargo run --release -p sandhole-benchmark-service -- \
-        --private-key ./test_data/ssh_key \
-        --port 13222 \
+        --private-key=./test_data/ssh_key \
+        --port=13222 \
+        --cipher=chacha20-poly1305@openssh.com \
         localhost
 
 measure-sandhole +ARGS:

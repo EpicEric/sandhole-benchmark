@@ -1,3 +1,8 @@
+use std::sync::{
+    Arc,
+    atomic::{AtomicU16, Ordering},
+};
+
 use axum::{
     body,
     extract::{Path, State, WebSocketUpgrade},
@@ -11,12 +16,13 @@ use hyper::StatusCode;
 
 pub(crate) async fn get_handler(
     Path(file_size): Path<usize>,
-    State(data): State<Bytes>,
+    State(data): State<(Bytes, Arc<AtomicU16>)>,
 ) -> impl IntoResponse {
-    if file_size > data.len() {
+    if file_size > data.0.len() {
         StatusCode::BAD_REQUEST.into_response()
     } else {
-        data.slice(..file_size).into_response()
+        let pad: usize = data.1.fetch_add(1, Ordering::AcqRel).into();
+        data.0.slice(pad..file_size + pad).into_response()
     }
 }
 

@@ -1,4 +1,7 @@
-use std::{sync::Arc, time::Duration};
+use std::{
+    sync::{Arc, atomic::AtomicU16},
+    time::Duration,
+};
 
 use axum::{
     Router,
@@ -28,12 +31,12 @@ type RouterService = TowerToHyperService<RouterIntoService<Incoming>>;
 
 /// A lazily-created Router, to be used by the SSH client tunnels.
 pub fn get_router(max_data_size: usize) -> RouterService {
-    let mut data = vec![0u8; max_data_size];
+    let mut data = vec![0u8; max_data_size + usize::from(u16::MAX)];
     rand::rng().fill_bytes(&mut data);
     TowerToHyperService::new(
         Router::new()
             .route("/get/{file_size}", get(get_handler))
-            .with_state(Bytes::from_static(data.leak()))
+            .with_state((Bytes::from_static(data.leak()), Arc::new(AtomicU16::new(0))))
             .route(
                 "/post/{file_size}",
                 post(post_handler).layer(DefaultBodyLimit::max(max_data_size)),
@@ -51,6 +54,7 @@ pub async fn ssh_entrypoint(
     key: Arc<PrivateKey>,
     ciphers: Vec<Name>,
     service: RouterService,
+    exec: Option<&str>,
 ) -> color_eyre::Result<()> {
     let config = Arc::new(client::Config {
         preferred: russh::Preferred {
@@ -79,7 +83,7 @@ pub async fn ssh_entrypoint(
             )
             .await
             .wrap_err_with(|| "SSH connection failed.")?;
-        match session.start_forwarding().await {
+        match session.start_forwarding(exec).await {
             Err(e) => error!(error = ?e, "TCP forward session failed."),
             _ => info!("Connection closed."),
         }
